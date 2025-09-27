@@ -2,7 +2,9 @@
 
 Pantallazo del sistem Técnico Dashboard
 
-![Dashaboard](https://github.com/user-attachments/assets/9a7aa195-6342-4f21-b547-5bce1592e83f)
+
+![Dashboard](https://github.com/user-attachments/assets/646484d7-0132-4640-8bc9-6667dba0858f)
+
 
 
 
