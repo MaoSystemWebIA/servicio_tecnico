@@ -1,5 +1,15 @@
 # Sistema de Servicio Técnico
 
+Pantallazo del sistem Técnico Dashboard
+
+![Dashaboard](https://github.com/user-attachments/assets/9a7aa195-6342-4f21-b547-5bce1592e83f)
+
+
+
+
+
+
+
 Un sistema completo de gestión para talleres de servicio técnico desarrollado con Django.
 
 ## Características
@@ -15,15 +25,15 @@ Un sistema completo de gestión para talleres de servicio técnico desarrollado 
 - **Dashboard**: Panel de control con métricas importantes
 
 ### Funcionalidades
-- ✅ Sistema de autenticación y autorización
-- ✅ Dashboard con estadísticas en tiempo real
-- ✅ Gestión completa de tickets de servicio
-- ✅ Control de inventario con alertas de stock bajo
-- ✅ Sistema de garantías
-- ✅ Mantenimiento preventivo
-- ✅ Generación de reportes
-- ✅ Interfaz responsive con Bootstrap 5
-- ✅ Configuración para producción
+-  Sistema de autenticación y autorización
+-  Dashboard con estadísticas en tiempo real
+-  Gestión completa de tickets de servicio
+-  Control de inventario con alertas de stock bajo
+-  Sistema de garantías
+-  Mantenimiento preventivo
+-  Generación de reportes
+- Interfaz responsive con Bootstrap 5
+-  Configuración para producción
 
 ## Requisitos del Sistema
 
