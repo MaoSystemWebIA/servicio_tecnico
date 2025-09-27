@@ -7,9 +7,6 @@ Pantallazo del sistem Técnico Dashboard
 
 
 
-
-
-
 Un sistema completo de gestión para talleres de servicio técnico desarrollado con Django.
 
 ## Características
