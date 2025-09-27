@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tickets - Sistema de Servicio Técnico{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="bi bi-ticket-detailed"></i> Tickets de Servicio
+            </h1>
+            <a href="{% url 'ticket_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nuevo Ticket
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Filtros -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="search" 
+                               placeholder="Buscar por número, cliente o equipo..." 
+                               value="{{ request.GET.search }}">
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" name="estado">
+                            <option value="">Todos los estados</option>
+                            <option value="recibido" {% if request.GET.estado == 'recibido' %}selected{% endif %}>Recibido</option>
+                            <option value="diagnostico" {% if request.GET.estado == 'diagnostico' %}selected{% endif %}>En Diagnóstico</option>
+                            <option value="espera_aprobacion" {% if request.GET.estado == 'espera_aprobacion' %}selected{% endif %}>Espera Aprobación</option>
+                            <option value="reparacion" {% if request.GET.estado == 'reparacion' %}selected{% endif %}>En Reparación</option>
+                            <option value="espera_repuestos" {% if request.GET.estado == 'espera_repuestos' %}selected{% endif %}>Espera Repuestos</option>
+                            <option value="completado" {% if request.GET.estado == 'completado' %}selected{% endif %}>Completado</option>
+                            <option value="entregado" {% if request.GET.estado == 'entregado' %}selected{% endif %}>Entregado</option>
+                            <option value="cancelado" {% if request.GET.estado == 'cancelado' %}selected{% endif %}>Cancelado</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" name="prioridad">
+                            <option value="">Todas las prioridades</option>
+                            <option value="baja" {% if request.GET.prioridad == 'baja' %}selected{% endif %}>Baja</option>
+                            <option value="media" {% if request.GET.prioridad == 'media' %}selected{% endif %}>Media</option>
+                            <option value="alta" {% if request.GET.prioridad == 'alta' %}selected{% endif %}>Alta</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-outline-primary">
+                            <i class="bi bi-search"></i> Buscar
+                        </button>
+                        <a href="{% url 'ticket_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Limpiar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lista de Tickets -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                {% if object_list %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Número</th>
+                                    <th>Cliente</th>
+                                    <th>Equipo</th>
+                                    <th>Estado</th>
+                                    <th>Prioridad</th>
+                                    <th>Fecha Ingreso</th>
+                                    <th>Técnico</th>
+                                    <th>Costo Estimado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ticket in object_list %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'ticket_detail' ticket.pk %}" class="text-decoration-none">
+                                            <strong>{{ ticket.numero }}</strong>
+                                        </a>
+                                    </td>
+                                    <td>{{ ticket.equipo.cliente.nombre }}</td>
+                                    <td>{{ ticket.equipo.marca }} {{ ticket.equipo.modelo }}</td>
+                                    <td>
+                                        <span class="badge bg-{% if ticket.estado == 'completado' %}success{% elif ticket.estado == 'entregado' %}info{% elif ticket.estado == 'cancelado' %}danger{% else %}warning{% endif %}">
+                                            {{ ticket.get_estado_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{% if ticket.prioridad == 'alta' %}danger{% elif ticket.prioridad == 'media' %}warning{% else %}success{% endif %}">
+                                            {{ ticket.get_prioridad_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ ticket.fecha_ingreso|date:"d/m/Y" }}</td>
+                                    <td>{{ ticket.tecnico_asignado|default:"-" }}</td>
+                                    <td>${{ ticket.costo_estimado|floatformat:2 }}</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'ticket_detail' ticket.pk %}" 
+                                               class="btn btn-sm btn-outline-info" title="Ver detalles">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{% url 'ticket_edit' ticket.pk %}" 
+                                               class="btn btn-sm btn-outline-warning" title="Editar">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="{% url 'ticket_delete' ticket.pk %}" 
+                                               class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Paginación -->
+                    {% if is_paginated %}
+                        <nav aria-label="Paginación de tickets">
+                            <ul class="pagination justify-content-center">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.prioridad %}&prioridad={{ request.GET.prioridad }}{% endif %}">
+                                            Primera
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.prioridad %}&prioridad={{ request.GET.prioridad }}{% endif %}">
+                                            Anterior
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+                                <li class="page-item active">
+                                    <span class="page-link">
+                                        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                                    </span>
+                                </li>
+
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.prioridad %}&prioridad={{ request.GET.prioridad }}{% endif %}">
+                                            Siguiente
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}{% if request.GET.prioridad %}&prioridad={{ request.GET.prioridad }}{% endif %}">
+                                            Última
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-ticket-detailed fs-1 text-muted"></i>
+                        <h4 class="text-muted mt-3">No hay tickets registrados</h4>
+                        <p class="text-muted">Comienza creando tu primer ticket de servicio.</p>
+                        <a href="{% url 'ticket_create' %}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Crear Ticket
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% if object %}Editar Cliente{% else %}Nuevo Cliente{% endif %} - Sistema de Servicio Técnico
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="bi bi-people"></i> 
+                {% if object %}Editar Cliente{% else %}Nuevo Cliente{% endif %}
+            </h1>
+            <a href="{% url 'cliente_list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-person-plus"></i> Información del Cliente
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.codigo|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.tipo|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            {{ form.nombre|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.contacto|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.telefono|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.email|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.ruc_ci|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            {{ form.direccion|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            {{ form.credito|as_crispy_field }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.limite_credito|as_crispy_field }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.saldo_actual|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            {{ form.notas|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'cliente_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> 
+                            {% if object %}Actualizar{% else %}Crear{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-info-circle"></i> Información
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">
+                    <strong>Código:</strong> Debe ser único para cada cliente.
+                </p>
+                <p class="text-muted">
+                    <strong>Tipo:</strong> Selecciona si es un cliente individual, empresa o gobierno.
+                </p>
+                <p class="text-muted">
+                    <strong>Crédito:</strong> Activa esta opción si el cliente puede comprar a crédito.
+                </p>
+                <p class="text-muted">
+                    <strong>Límite de Crédito:</strong> Establece el monto máximo que puede deber el cliente.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

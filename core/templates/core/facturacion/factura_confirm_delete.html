@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Eliminar Factura - Sistema de Servicio Técnico{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-exclamation-triangle"></i> Confirmar Eliminación
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>¡Atención!</strong> Esta acción no se puede deshacer.
+                </div>
+                
+                <p>¿Estás seguro de que deseas eliminar la siguiente factura?</p>
+                
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h6 class="card-title">{{ object.numero }}</h6>
+                        <p class="card-text">
+                            <strong>Cliente:</strong> {{ object.cliente.nombre }}<br>
+                            <strong>Fecha Emisión:</strong> {{ object.fecha_emision|date:"d/m/Y" }}<br>
+                            <strong>Fecha Vencimiento:</strong> {{ object.fecha_vencimiento|date:"d/m/Y" }}<br>
+                            <strong>Total:</strong> ${{ object.total|floatformat:2 }}<br>
+                            <strong>Estado:</strong> {{ object.get_estado_display }}
+                        </p>
+                    </div>
+                </div>
+                
+                {% if object.estado == 'pagada' %}
+                    <div class="alert alert-danger mt-3">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <strong>¡Cuidado!</strong> Esta factura está marcada como pagada. 
+                        Al eliminarla se perderá el registro del pago.
+                    </div>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'factura_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Eliminar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

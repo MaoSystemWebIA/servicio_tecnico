@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Facturación - Sistema de Servicio Técnico{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="bi bi-receipt"></i> Facturación
+            </h1>
+            <a href="{% url 'factura_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nueva Factura
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Filtros -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="search" 
+                               placeholder="Buscar por número o cliente..." 
+                               value="{{ request.GET.search }}">
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" name="estado">
+                            <option value="">Todos los estados</option>
+                            <option value="pendiente" {% if request.GET.estado == 'pendiente' %}selected{% endif %}>Pendiente</option>
+                            <option value="parcial" {% if request.GET.estado == 'parcial' %}selected{% endif %}>Pago Parcial</option>
+                            <option value="pagada" {% if request.GET.estado == 'pagada' %}selected{% endif %}>Pagada</option>
+                            <option value="cancelada" {% if request.GET.estado == 'cancelada' %}selected{% endif %}>Cancelada</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date" class="form-control" name="fecha_desde" 
+                               placeholder="Fecha desde" value="{{ request.GET.fecha_desde }}">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-outline-primary">
+                            <i class="bi bi-search"></i> Buscar
+                        </button>
+                        <a href="{% url 'factura_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Limpiar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lista de Facturas -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                {% if object_list %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Número</th>
+                                    <th>Cliente</th>
+                                    <th>Fecha Emisión</th>
+                                    <th>Fecha Vencimiento</th>
+                                    <th>Subtotal</th>
+                                    <th>IVA</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for factura in object_list %}
+                                <tr>
+                                    <td>
+                                        <a href="#" class="text-decoration-none">
+                                            <strong>{{ factura.numero }}</strong>
+                                        </a>
+                                    </td>
+                                    <td>{{ factura.cliente.nombre }}</td>
+                                    <td>{{ factura.fecha_emision|date:"d/m/Y" }}</td>
+                                    <td>
+                                        {{ factura.fecha_vencimiento|date:"d/m/Y" }}
+                                        {% if factura.fecha_vencimiento < today and factura.estado != 'pagada' %}
+                                            <span class="badge bg-danger ms-2">Vencida</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>${{ factura.subtotal|floatformat:2 }}</td>
+                                    <td>${{ factura.iva|floatformat:2 }}</td>
+                                    <td>
+                                        <strong>${{ factura.total|floatformat:2 }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{% if factura.estado == 'pagada' %}success{% elif factura.estado == 'parcial' %}warning{% elif factura.estado == 'cancelada' %}danger{% else %}info{% endif %}">
+                                            {{ factura.get_estado_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="#" class="btn btn-sm btn-outline-info" title="Ver factura">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{% url 'factura_edit' factura.pk %}" 
+                                               class="btn btn-sm btn-outline-warning" title="Editar">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="{% url 'factura_delete' factura.pk %}" 
+                                               class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Paginación -->
+                    {% if is_paginated %}
+                        <nav aria-label="Paginación de facturas">
+                            <ul class="pagination justify-content-center">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}">
+                                            Primera
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}">
+                                            Anterior
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+                                <li class="page-item active">
+                                    <span class="page-link">
+                                        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                                    </span>
+                                </li>
+
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}">
+                                            Siguiente
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}">
+                                            Última
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-receipt fs-1 text-muted"></i>
+                        <h4 class="text-muted mt-3">No hay facturas registradas</h4>
+                        <p class="text-muted">Comienza creando tu primera factura.</p>
+                        <a href="{% url 'factura_create' %}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Crear Factura
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Resumen Financiero -->
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <h4>{{ total_facturas }}</h4>
+                <p class="mb-0">Total Facturas</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <h4>${{ total_pagadas|floatformat:2 }}</h4>
+                <p class="mb-0">Total Pagadas</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body text-center">
+                <h4>${{ total_pendientes|floatformat:2 }}</h4>
+                <p class="mb-0">Total Pendientes</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-danger text-white">
+            <div class="card-body text-center">
+                <h4>{{ facturas_vencidas }}</h4>
+                <p class="mb-0">Facturas Vencidas</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

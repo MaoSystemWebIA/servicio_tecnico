@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Reportes - Sistema de Servicio Técnico{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="bi bi-graph-up"></i> Reportes
+            </h1>
+            <a href="{% url 'reporte_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nuevo Reporte
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Reportes Rápidos -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-lightning"></i> Reportes Rápidos
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body text-center">
+                                <i class="bi bi-people fs-1 mb-2"></i>
+                                <h6>Reporte de Clientes</h6>
+                                <button class="btn btn-light btn-sm" onclick="generarReporte('clientes')">
+                                    Generar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body text-center">
+                                <i class="bi bi-ticket-detailed fs-1 mb-2"></i>
+                                <h6>Reporte de Servicios</h6>
+                                <button class="btn btn-light btn-sm" onclick="generarReporte('servicios')">
+                                    Generar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body text-center">
+                                <i class="bi bi-currency-dollar fs-1 mb-2"></i>
+                                <h6>Reporte Financiero</h6>
+                                <button class="btn btn-light btn-sm" onclick="generarReporte('financiero')">
+                                    Generar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-info text-white">
+                            <div class="card-body text-center">
+                                <i class="bi bi-box-seam fs-1 mb-2"></i>
+                                <h6>Reporte de Inventario</h6>
+                                <button class="btn btn-light btn-sm" onclick="generarReporte('inventario')">
+                                    Generar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lista de Reportes -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-list"></i> Mis Reportes
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if object_list %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Fecha Creación</th>
+                                    <th>Creado Por</th>
+                                    <th>Archivo</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reporte in object_list %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ reporte.nombre }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">{{ reporte.get_tipo_display }}</span>
+                                    </td>
+                                    <td>{{ reporte.fecha_creacion|date:"d/m/Y H:i" }}</td>
+                                    <td>{{ reporte.creado_por.username }}</td>
+                                    <td>
+                                        {% if reporte.archivo %}
+                                            <a href="{{ reporte.archivo.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-download"></i> Descargar
+                                            </a>
+                                        {% else %}
+                                            <span class="text-muted">No disponible</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <button class="btn btn-sm btn-outline-success" onclick="regenerarReporte({{ reporte.pk }})" title="Regenerar">
+                                                <i class="bi bi-arrow-clockwise"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="eliminarReporte({{ reporte.pk }})" title="Eliminar">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Paginación -->
+                    {% if is_paginated %}
+                        <nav aria-label="Paginación de reportes">
+                            <ul class="pagination justify-content-center">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1">Primera</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                                    </li>
+                                {% endif %}
+
+                                <li class="page-item active">
+                                    <span class="page-link">
+                                        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                                    </span>
+                                </li>
+
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Última</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-graph-up fs-1 text-muted"></i>
+                        <h4 class="text-muted mt-3">No hay reportes generados</h4>
+                        <p class="text-muted">Comienza generando tu primer reporte.</p>
+                        <a href="{% url 'reporte_create' %}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Crear Reporte
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function generarReporte(tipo) {
+    // Mostrar modal de confirmación
+    if (confirm('¿Generar reporte de ' + tipo + '?')) {
+        // Aquí se implementaría la lógica para generar el reporte
+        showToast('Generando reporte de ' + tipo + '...', 'info');
+        
+        // Simular generación de reporte
+        setTimeout(function() {
+            showToast('Reporte generado exitosamente', 'success');
+        }, 2000);
+    }
+}
+
+function regenerarReporte(id) {
+    if (confirm('¿Regenerar este reporte?')) {
+        showToast('Regenerando reporte...', 'info');
+        
+        // Simular regeneración
+        setTimeout(function() {
+            showToast('Reporte regenerado exitosamente', 'success');
+        }, 2000);
+    }
+}
+
+function eliminarReporte(id) {
+    if (confirm('¿Eliminar este reporte?')) {
+        showToast('Eliminando reporte...', 'info');
+        
+        // Simular eliminación
+        setTimeout(function() {
+            showToast('Reporte eliminado exitosamente', 'success');
+        }, 1000);
+    }
+}
+</script>
+{% endblock %}

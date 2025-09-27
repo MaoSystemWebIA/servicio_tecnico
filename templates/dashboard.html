@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Sistema de Servicio Técnico{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </h1>
+    </div>
+</div>
+
+<!-- Estadísticas Generales -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">{{ total_clientes }}</h4>
+                        <p class="card-text">Clientes</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-people fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">{{ total_equipos }}</h4>
+                        <p class="card-text">Equipos</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-laptop fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">{{ total_tickets }}</h4>
+                        <p class="card-text">Total Tickets</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-ticket-detailed fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">{{ tickets_activos }}</h4>
+                        <p class="card-text">Tickets Activos</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-gear fs-1"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Tickets Recientes -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-clock-history"></i> Tickets Recientes
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if tickets_recientes %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Número</th>
+                                    <th>Cliente</th>
+                                    <th>Equipo</th>
+                                    <th>Estado</th>
+                                    <th>Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ticket in tickets_recientes %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'ticket_detail' ticket.pk %}" class="text-decoration-none">
+                                            {{ ticket.numero }}
+                                        </a>
+                                    </td>
+                                    <td>{{ ticket.equipo.cliente.nombre }}</td>
+                                    <td>{{ ticket.equipo.marca }} {{ ticket.equipo.modelo }}</td>
+                                    <td>
+                                        <span class="badge bg-{% if ticket.estado == 'completado' %}success{% elif ticket.estado == 'cancelado' %}danger{% else %}warning{% endif %}">
+                                            {{ ticket.get_estado_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ ticket.fecha_ingreso|date:"d/m/Y H:i" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No hay tickets recientes.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Alertas y Stock Bajo -->
+    <div class="col-md-4">
+        <!-- Alertas -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-exclamation-triangle"></i> Alertas
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if alertas_no_leidas %}
+                    {% for alerta in alertas_no_leidas %}
+                    <div class="alert alert-{% if alerta.prioridad == 'critica' %}danger{% elif alerta.prioridad == 'alta' %}warning{% else %}info{% endif %} alert-sm">
+                        <strong>{{ alerta.titulo }}</strong><br>
+                        <small>{{ alerta.descripcion|truncatechars:50 }}</small>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">No hay alertas pendientes.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Stock Bajo -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-box-seam"></i> Stock Bajo
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if stock_bajo %}
+                    {% for repuesto in stock_bajo %}
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <strong>{{ repuesto.nombre }}</strong><br>
+                            <small class="text-muted">{{ repuesto.codigo }}</small>
+                        </div>
+                        <span class="badge bg-danger">{{ repuesto.stock_actual }}</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">Todos los repuestos tienen stock suficiente.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gráfico de Tickets por Estado -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-pie-chart"></i> Tickets por Estado
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if tickets_por_estado %}
+                    <div class="row">
+                        {% for estado in tickets_por_estado %}
+                        <div class="col-md-2 text-center">
+                            <div class="p-3 border rounded">
+                                <h4 class="text-primary">{{ estado.count }}</h4>
+                                <small class="text-muted">{{ estado.estado|title }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">No hay datos de tickets disponibles.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

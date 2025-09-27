@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% if object %}Editar Factura{% else %}Nueva Factura{% endif %} - Sistema de Servicio Técnico
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>
+                <i class="bi bi-receipt"></i> 
+                {% if object %}Editar Factura{% else %}Nueva Factura{% endif %}
+            </h1>
+            <a href="{% url 'factura_list' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-receipt"></i> Información de la Factura
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.numero|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.cliente|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.fecha_emision|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.fecha_vencimiento|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            {{ form.subtotal|as_crispy_field }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.iva|as_crispy_field }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form.total|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.estado|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.ticket|as_crispy_field }}
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'factura_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> 
+                            {% if object %}Actualizar{% else %}Crear{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-calculator"></i> Cálculos
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="calculos-factura">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <h6 class="text-primary" id="iva-calculado">$0.00</h6>
+                            <small class="text-muted">IVA (12%)</small>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="text-success" id="total-calculado">$0.00</h6>
+                            <small class="text-muted">Total</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-info-circle"></i> Información
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">
+                    <strong>Número:</strong> Se genera automáticamente si se deja vacío.
+                </p>
+                <p class="text-muted">
+                    <strong>IVA:</strong> Se calcula automáticamente al 12%.
+                </p>
+                <p class="text-muted">
+                    <strong>Total:</strong> Subtotal + IVA.
+                </p>
+                <p class="text-muted">
+                    <strong>Ticket:</strong> Opcional, asociar con un ticket de servicio.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const subtotalInput = document.querySelector('input[name="subtotal"]');
+    const ivaInput = document.querySelector('input[name="iva"]');
+    const totalInput = document.querySelector('input[name="total"]');
+    const ivaCalculado = document.getElementById('iva-calculado');
+    const totalCalculado = document.getElementById('total-calculado');
+    
+    function calcularFactura() {
+        const subtotal = parseFloat(subtotalInput.value) || 0;
+        const iva = subtotal * 0.12;
+        const total = subtotal + iva;
+        
+        if (ivaInput) ivaInput.value = iva.toFixed(2);
+        if (totalInput) totalInput.value = total.toFixed(2);
+        
+        ivaCalculado.textContent = '$' + iva.toFixed(2);
+        totalCalculado.textContent = '$' + total.toFixed(2);
+    }
+    
+    if (subtotalInput) {
+        subtotalInput.addEventListener('input', calcularFactura);
+    }
+});
+</script>
+{% endblock %}
