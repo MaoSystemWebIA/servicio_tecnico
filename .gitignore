@@ -1,0 +1,79 @@
+# ========================
+# Archivos del sistema operativo
+# ========================
+.DS_Store
+Thumbs.db
+
+# ========================
+# Variables de entorno / credenciales
+# ========================
+.env
+*.local
+*.secret
+/secrets.json
+
+# ========================
+# Logs y temporales
+# ========================
+*.log
+logs/
+*.pot
+*.mo
+
+# ========================
+# Archivos de Python / Django
+# ========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Base de datos SQLite (para desarrollo)
+*.sqlite3
+
+# Migraciones (opcional: si quieres que se generen de nuevo)
+# normalmente sí se suben, pero puedes ignorarlas si manejas
+# un flujo de migraciones controlado en otro lado
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# ========================
+# Entornos virtuales
+# ========================
+venv/
+.venv/
+ENV/
+env/
+env.bak/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ========================
+# Archivos de compilación Python
+# ========================
+dist/
+build/
+*.egg-info/
+*.egg
+*.manifest
+*.spec
+
+# ========================
+# PostgreSQL (backups y dumps locales)
+# ========================
+*.sql
+*.dump
+
+# ========================
+# Archivos estáticos / media (se generan con collectstatic)
+# ========================
+/staticfiles/
+/media/
+
+# ========================
+# IDEs / Editores
+# ========================
+.vscode/
+.idea/
+*.swp
+*.swo
