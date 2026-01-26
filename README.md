@@ -31,7 +31,7 @@ Sistema completo de gestión para talleres de servicio técnico con **Inteligenc
 - **Deployment**: Gunicorn, WhiteNoise
 - **Python**: 3.12+
 
-## 📋 Requisitos del Sistema
+##  Requisitos del Sistema
 
 - Python 3.12 o superior
 - PostgreSQL 12 o superior
