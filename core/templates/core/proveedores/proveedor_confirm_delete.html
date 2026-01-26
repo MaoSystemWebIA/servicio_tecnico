@@ -1,59 +1,22 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Eliminar Proveedor - Sistema de Servicio Técnico{% endblock %}
+{% block title %}Eliminar Proveedor - Servicio Técnico{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-danger text-white">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-exclamation-triangle"></i> Confirmar Eliminación
-                </h5>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h3>¿Estás seguro de eliminar este proveedor?</h3>
+        <p><strong>{{ object.nombre }}</strong></p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="d-flex gap-2">
+                <a href="{% url 'proveedor_list' %}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Eliminar
+                </button>
             </div>
-            <div class="card-body">
-                <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    <strong>¡Atención!</strong> Esta acción no se puede deshacer.
-                </div>
-                
-                <p>¿Estás seguro de que deseas eliminar el siguiente proveedor?</p>
-                
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <h6 class="card-title">{{ object.nombre }}</h6>
-                        <p class="card-text">
-                            <strong>Contacto:</strong> {{ object.contacto|default:"-" }}<br>
-                            <strong>Teléfono:</strong> {{ object.telefono|default:"-" }}<br>
-                            <strong>Email:</strong> {{ object.email|default:"-" }}<br>
-                            <strong>RUC:</strong> {{ object.ruc|default:"-" }}<br>
-                            <strong>Rating:</strong> 
-                            {% for i in "12345" %}
-                                {% if forloop.counter <= object.rating %}
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                {% else %}
-                                    <i class="bi bi-star text-muted"></i>
-                                {% endif %}
-                            {% endfor %}
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer">
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="d-flex justify-content-end gap-2">
-                        <a href="{% url 'proveedor_list' %}" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left"></i> Cancelar
-                        </a>
-                        <button type="submit" class="btn btn-danger">
-                            <i class="bi bi-trash"></i> Eliminar
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
 {% endblock %}

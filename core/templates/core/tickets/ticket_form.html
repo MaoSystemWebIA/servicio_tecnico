@@ -2,140 +2,28 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-{% block title %}
-    {% if object %}Editar Ticket{% else %}Nuevo Ticket{% endif %} - Sistema de Servicio Técnico
-{% endblock %}
+{% block title %}{% if object %}Editar{% else %}Nuevo{% endif %} Ticket - Servicio Técnico{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>
-                <i class="bi bi-ticket-detailed"></i> 
-                {% if object %}Editar Ticket{% else %}Nuevo Ticket{% endif %}
-            </h1>
-            <a href="{% url 'ticket_list' %}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Volver
-            </a>
-        </div>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-ticket-detailed"></i> {% if object %}Editar{% else %}Nuevo{% endif %} Ticket</h2>
+    <a href="{% url 'ticket_list' %}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Volver
+    </a>
 </div>
 
-<div class="row">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-ticket-detailed"></i> Información del Ticket
-                </h5>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <a href="{% url 'ticket_list' %}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> Guardar
+                </button>
             </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form.numero|as_crispy_field }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form.equipo|as_crispy_field }}
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form.estado|as_crispy_field }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form.prioridad|as_crispy_field }}
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form.fecha_ingreso|as_crispy_field }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form.fecha_prometida|as_crispy_field }}
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form.tecnico_asignado|as_crispy_field }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form.costo_estimado|as_crispy_field }}
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-12">
-                            {{ form.problema_reportado|as_crispy_field }}
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form.costo_real|as_crispy_field }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form.observaciones|as_crispy_field }}
-                        </div>
-                    </div>
-                    
-                    <div class="d-flex justify-content-end gap-2">
-                        <a href="{% url 'ticket_list' %}" class="btn btn-secondary">
-                            <i class="bi bi-x-circle"></i> Cancelar
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-circle"></i> 
-                            {% if object %}Actualizar{% else %}Crear{% endif %}
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-info-circle"></i> Información
-                </h5>
-            </div>
-            <div class="card-body">
-                <p class="text-muted">
-                    <strong>Número:</strong> Se genera automáticamente si se deja vacío.
-                </p>
-                <p class="text-muted">
-                    <strong>Estado:</strong> Indica el estado actual del ticket.
-                </p>
-                <p class="text-muted">
-                    <strong>Prioridad:</strong> Define la urgencia del servicio.
-                </p>
-                <p class="text-muted">
-                    <strong>Técnico:</strong> Asigna un técnico responsable.
-                </p>
-            </div>
-        </div>
-        
-        <div class="card mt-3">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-lightbulb"></i> Consejos
-                </h5>
-            </div>
-            <div class="card-body">
-                <ul class="list-unstyled text-muted">
-                    <li><i class="bi bi-check-circle text-success"></i> Describe el problema claramente</li>
-                    <li><i class="bi bi-check-circle text-success"></i> Asigna prioridad según urgencia</li>
-                    <li><i class="bi bi-check-circle text-success"></i> Establece fecha prometida realista</li>
-                    <li><i class="bi bi-check-circle text-success"></i> Actualiza el estado regularmente</li>
-                </ul>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
 {% endblock %}

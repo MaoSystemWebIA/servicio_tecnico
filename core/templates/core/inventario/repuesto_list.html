@@ -1,220 +1,72 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Repuestos - Sistema de Servicio Técnico{% endblock %}
+{% block title %}Inventario - Servicio Técnico{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>
-                <i class="bi bi-box-seam"></i> Inventario de Repuestos
-            </h1>
-            <a href="{% url 'repuesto_create' %}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Nuevo Repuesto
-            </a>
-        </div>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-box-seam"></i> Repuestos</h2>
+    <a href="{% url 'repuesto_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Nuevo Repuesto
+    </a>
 </div>
 
-<!-- Filtros -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <form method="get" class="row g-3">
-                    <div class="col-md-4">
-                        <input type="text" class="form-control" name="search" 
-                               placeholder="Buscar por código, nombre o marca..." 
-                               value="{{ request.GET.search }}">
-                    </div>
-                    <div class="col-md-3">
-                        <select class="form-select" name="categoria">
-                            <option value="">Todas las categorías</option>
-                            {% for categoria in categorias %}
-                                <option value="{{ categoria.id }}" {% if request.GET.categoria == categoria.id|stringformat:"s" %}selected{% endif %}>
-                                    {{ categoria.nombre }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="stock_bajo" id="stock_bajo" 
-                                   {% if request.GET.stock_bajo %}checked{% endif %}>
-                            <label class="form-check-label" for="stock_bajo">
-                                Solo stock bajo
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-outline-primary">
-                            <i class="bi bi-search"></i> Buscar
-                        </button>
-                        <a href="{% url 'repuesto_list' %}" class="btn btn-outline-secondary">
-                            <i class="bi bi-x-circle"></i> Limpiar
-                        </a>
-                    </div>
-                </form>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="get" class="mb-3">
+            <div class="input-group">
+                <input type="text" class="form-control" name="search" placeholder="Buscar..." value="{{ request.GET.search }}">
+                <button class="btn btn-outline-primary" type="submit">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
             </div>
-        </div>
-    </div>
-</div>
+        </form>
 
-<!-- Lista de Repuestos -->
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                {% if object_list %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Código</th>
-                                    <th>Nombre</th>
-                                    <th>Categoría</th>
-                                    <th>Marca</th>
-                                    <th>Stock Actual</th>
-                                    <th>Stock Mínimo</th>
-                                    <th>Precio Costo</th>
-                                    <th>Precio Venta</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for repuesto in object_list %}
-                                <tr class="{% if repuesto.stock_actual <= repuesto.stock_minimo %}table-warning{% endif %}">
-                                    <td>
-                                        <strong>{{ repuesto.codigo }}</strong>
-                                    </td>
-                                    <td>{{ repuesto.nombre }}</td>
-                                    <td>
-                                        <span class="badge bg-info">{{ repuesto.categoria.nombre }}</span>
-                                    </td>
-                                    <td>{{ repuesto.marca|default:"-" }}</td>
-                                    <td>
-                                        <span class="{% if repuesto.stock_actual <= repuesto.stock_minimo %}text-danger fw-bold{% endif %}">
-                                            {{ repuesto.stock_actual }}
-                                        </span>
-                                    </td>
-                                    <td>{{ repuesto.stock_minimo }}</td>
-                                    <td>${{ repuesto.precio_costo|floatformat:2 }}</td>
-                                    <td>${{ repuesto.precio_venta|floatformat:2 }}</td>
-                                    <td>
-                                        {% if repuesto.stock_actual <= repuesto.stock_minimo %}
-                                            <span class="badge bg-danger">Stock Bajo</span>
-                                        {% elif repuesto.stock_actual == 0 %}
-                                            <span class="badge bg-dark">Sin Stock</span>
-                                        {% else %}
-                                            <span class="badge bg-success">Disponible</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <a href="{% url 'repuesto_edit' repuesto.pk %}" 
-                                               class="btn btn-sm btn-outline-warning" title="Editar">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            <a href="{% url 'repuesto_delete' repuesto.pk %}" 
-                                               class="btn btn-sm btn-outline-danger" title="Eliminar">
-                                                <i class="bi bi-trash"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Paginación -->
-                    {% if is_paginated %}
-                        <nav aria-label="Paginación de repuestos">
-                            <ul class="pagination justify-content-center">
-                                {% if page_obj.has_previous %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}{% if request.GET.stock_bajo %}&stock_bajo=on{% endif %}">
-                                            Primera
-                                        </a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}{% if request.GET.stock_bajo %}&stock_bajo=on{% endif %}">
-                                            Anterior
-                                        </a>
-                                    </li>
-                                {% endif %}
-
-                                <li class="page-item active">
-                                    <span class="page-link">
-                                        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
-                                    </span>
-                                </li>
-
-                                {% if page_obj.has_next %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}{% if request.GET.stock_bajo %}&stock_bajo=on{% endif %}">
-                                            Siguiente
-                                        </a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}{% if request.GET.stock_bajo %}&stock_bajo=on{% endif %}">
-                                            Última
-                                        </a>
-                                    </li>
-                                {% endif %}
-                            </ul>
-                        </nav>
-                    {% endif %}
-                {% else %}
-                    <div class="text-center py-5">
-                        <i class="bi bi-box-seam fs-1 text-muted"></i>
-                        <h4 class="text-muted mt-3">No hay repuestos registrados</h4>
-                        <p class="text-muted">Comienza agregando tu primer repuesto al inventario.</p>
-                        <a href="{% url 'repuesto_create' %}" class="btn btn-primary">
-                            <i class="bi bi-plus-circle"></i> Agregar Repuesto
-                        </a>
-                    </div>
-                {% endif %}
-            </div>
+        {% if object_list %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Stock Actual</th>
+                        <th>Stock Mínimo</th>
+                        <th>Precio Venta</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for repuesto in object_list %}
+                    <tr>
+                        <td>{{ repuesto.codigo }}</td>
+                        <td>{{ repuesto.nombre }}</td>
+                        <td>{{ repuesto.categoria.nombre }}</td>
+                        <td>
+                            <span class="badge bg-{% if repuesto.stock_actual <= repuesto.stock_minimo %}danger{% else %}success{% endif %}">
+                                {{ repuesto.stock_actual }}
+                            </span>
+                        </td>
+                        <td>{{ repuesto.stock_minimo }}</td>
+                        <td>${{ repuesto.precio_venta }}</td>
+                        <td>
+                            <a href="{% url 'repuesto_edit' repuesto.pk %}" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'repuesto_delete' repuesto.pk %}" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-    </div>
-</div>
-
-<!-- Resumen de Inventario -->
-<div class="row mt-4">
-    <div class="col-md-3">
-        <div class="card bg-primary text-white">
-            <div class="card-body text-center">
-                <h4>{{ total_repuestos }}</h4>
-                <p class="mb-0">Total Repuestos</p>
-            </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No hay repuestos registrados.
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card bg-warning text-white">
-            <div class="card-body text-center">
-                <h4>{{ stock_bajo_count }}</h4>
-                <p class="mb-0">Stock Bajo</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card bg-danger text-white">
-            <div class="card-body text-center">
-                <h4>{{ sin_stock_count }}</h4>
-                <p class="mb-0">Sin Stock</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card bg-success text-white">
-            <div class="card-body text-center">
-                <h4>${{ valor_total|floatformat:2 }}</h4>
-                <p class="mb-0">Valor Total</p>
-            </div>
-        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

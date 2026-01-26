@@ -2,183 +2,28 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-{% block title %}
-    {% if object %}Editar Repuesto{% else %}Nuevo Repuesto{% endif %} - Sistema de Servicio Técnico
-{% endblock %}
+{% block title %}{% if object %}Editar{% else %}Nuevo{% endif %} Repuesto - Servicio Técnico{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>
-                <i class="bi bi-box-seam"></i> 
-                {% if object %}Editar Repuesto{% else %}Nuevo Repuesto{% endif %}
-            </h1>
-            <a href="{% url 'repuesto_list' %}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Volver
-            </a>
-        </div>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-box-seam"></i> {% if object %}Editar{% else %}Nuevo{% endif %} Repuesto</h2>
+    <a href="{% url 'repuesto_list' %}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Volver
+    </a>
 </div>
 
-<div class="row">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-box-seam"></i> Información del Repuesto
-                </h5>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <a href="{% url 'repuesto_list' %}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> Guardar
+                </button>
             </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form.codigo|as_crispy_field }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form.categoria|as_crispy_field }}
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-12">
-                            {{ form.nombre|as_crispy_field }}
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form.marca|as_crispy_field }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form.modelo_compatible|as_crispy_field }}
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-4">
-                            {{ form.stock_actual|as_crispy_field }}
-                        </div>
-                        <div class="col-md-4">
-                            {{ form.stock_minimo|as_crispy_field }}
-                        </div>
-                        <div class="col-md-4">
-                            {{ form.ubicacion_almacen|as_crispy_field }}
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form.precio_costo|as_crispy_field }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form.precio_venta|as_crispy_field }}
-                        </div>
-                    </div>
-                    
-                    <div class="d-flex justify-content-end gap-2">
-                        <a href="{% url 'repuesto_list' %}" class="btn btn-secondary">
-                            <i class="bi bi-x-circle"></i> Cancelar
-                        </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-circle"></i> 
-                            {% if object %}Actualizar{% else %}Crear{% endif %}
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-info-circle"></i> Información
-                </h5>
-            </div>
-            <div class="card-body">
-                <p class="text-muted">
-                    <strong>Código:</strong> Debe ser único para cada repuesto.
-                </p>
-                <p class="text-muted">
-                    <strong>Stock Mínimo:</strong> Nivel de alerta para reabastecimiento.
-                </p>
-                <p class="text-muted">
-                    <strong>Precio Costo:</strong> Precio de compra del repuesto.
-                </p>
-                <p class="text-muted">
-                    <strong>Precio Venta:</strong> Precio de venta al cliente.
-                </p>
-            </div>
-        </div>
-        
-        <div class="card mt-3">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-calculator"></i> Cálculo de Margen
-                </h5>
-            </div>
-            <div class="card-body">
-                <div id="margen-calculo">
-                    <p class="text-muted">Ingresa los precios para calcular el margen de ganancia.</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="card mt-3">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-lightbulb"></i> Consejos
-                </h5>
-            </div>
-            <div class="card-body">
-                <ul class="list-unstyled text-muted">
-                    <li><i class="bi bi-check-circle text-success"></i> Mantén stock mínimo actualizado</li>
-                    <li><i class="bi bi-check-circle text-success"></i> Registra ubicación en almacén</li>
-                    <li><i class="bi bi-check-circle text-success"></i> Actualiza precios regularmente</li>
-                    <li><i class="bi bi-check-circle text-success"></i> Usa códigos descriptivos</li>
-                </ul>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const precioCostoInput = document.querySelector('input[name="precio_costo"]');
-    const precioVentaInput = document.querySelector('input[name="precio_venta"]');
-    const margenCalculo = document.getElementById('margen-calculo');
-    
-    function calcularMargen() {
-        const costo = parseFloat(precioCostoInput.value) || 0;
-        const venta = parseFloat(precioVentaInput.value) || 0;
-        
-        if (costo > 0 && venta > 0) {
-            const margen = ((venta - costo) / costo) * 100;
-            const ganancia = venta - costo;
-            
-            margenCalculo.innerHTML = `
-                <div class="row text-center">
-                    <div class="col-6">
-                        <h6 class="text-primary">${margen.toFixed(1)}%</h6>
-                        <small class="text-muted">Margen</small>
-                    </div>
-                    <div class="col-6">
-                        <h6 class="text-success">$${ganancia.toFixed(2)}</h6>
-                        <small class="text-muted">Ganancia</small>
-                    </div>
-                </div>
-            `;
-        } else {
-            margenCalculo.innerHTML = '<p class="text-muted">Ingresa los precios para calcular el margen de ganancia.</p>';
-        }
-    }
-    
-    precioCostoInput.addEventListener('input', calcularMargen);
-    precioVentaInput.addEventListener('input', calcularMargen);
-});
-</script>
 {% endblock %}

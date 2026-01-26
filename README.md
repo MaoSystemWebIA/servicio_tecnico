@@ -1,59 +1,58 @@
-# Sistema de Servicio Técnico
-
-Pantallazo del sistem Técnico Dashboard
-
+#  Sistema de Servicio Técnico
 
 ![Dashboard](https://github.com/user-attachments/assets/646484d7-0132-4640-8bc9-6667dba0858f)
 
+Sistema completo de gestión para talleres de servicio técnico con **Inteligencia Artificial integrada**, desarrollado con Django 5.2.
 
+##  Características Principales
 
+###  Funcionalidades Avanzadas
+- **Asistente IA**: Chatbot integrado para consultas rápidas sobre tickets, clientes y equipos
+- **Predicción de Inventario**: Gráficos predictivos con Chart.js para gestión proactiva
+- **Diagnóstico Inteligente**: Análisis automático de problemas con porcentajes de probabilidad
+- **Alertas Inteligentes**: Notificaciones con cálculo de días hasta agotamiento de stock
+- **Dashboard Interactivo**: Panel de control en tiempo real con métricas clave
 
+###  Módulos Core
+-  **Gestión de Clientes**: Registro completo con créditos y límites
+-  **Gestión de Equipos**: Control de equipos con garantías y mantenimiento
+-  **Tickets de Servicio**: Seguimiento completo del ciclo de vida
+-  **Inventario Inteligente**: Control de stock con predicciones y alertas
+-  **Proveedores**: Gestión completa de proveedores y compras
+-  **Facturación**: Emisión de facturas electrónicas
+-  **Reportes**: Generación de reportes y estadísticas avanzadas
 
-Un sistema completo de gestión para talleres de servicio técnico desarrollado con Django.
+##  Tecnologías
 
-## Características
+- **Backend**: Django 5.2.6
+- **Base de Datos**: PostgreSQL 12+
+- **Frontend**: Bootstrap 5, Chart.js 4.4
+- **IA**: Sistema de procesamiento de lenguaje natural
+- **Deployment**: Gunicorn, WhiteNoise
+- **Python**: 3.12+
 
-### Módulos Principales
-- **Gestión de Clientes**: Registro y administración de clientes
-- **Gestión de Equipos**: Control de equipos y dispositivos
-- **Tickets de Servicio**: Seguimiento completo de servicios técnicos
-- **Inventario**: Control de repuestos y stock
-- **Proveedores**: Gestión de proveedores y compras
-- **Facturación**: Emisión de facturas y control de pagos
-- **Reportes**: Generación de reportes y estadísticas
-- **Dashboard**: Panel de control con métricas importantes
+## 📋 Requisitos del Sistema
 
-### Funcionalidades
--  Sistema de autenticación y autorización
--  Dashboard con estadísticas en tiempo real
--  Gestión completa de tickets de servicio
--  Control de inventario con alertas de stock bajo
--  Sistema de garantías
--  Mantenimiento preventivo
--  Generación de reportes
-- Interfaz responsive con Bootstrap 5
--  Configuración para producción
+- Python 3.12 o superior
+- PostgreSQL 12 o superior
+- pip (gestor de paquetes de Python)
 
-## Requisitos del Sistema
-
-- Python 3.12+
-- PostgreSQL 12+
-- Node.js (para compilar archivos estáticos)
-
-## Instalación
+##  Instalación Rápida
 
 ### 1. Clonar el repositorio
 ```bash
-git clone <url-del-repositorio>
-cd servicio_tecnico
+git clone https://github.com/tu-usuario/servicio-tecnico.git
+cd servicio-tecnico
 ```
 
 ### 2. Crear entorno virtual
 ```bash
+# Windows
 python -m venv venv
-# En Windows
 venv\Scripts\activate
-# En Linux/Mac
+
+# Linux/Mac
+python3 -m venv venv
 source venv/bin/activate
 ```
 
@@ -62,24 +61,22 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Configurar base de datos
-Crear una base de datos PostgreSQL:
+### 4. Configurar base de datos PostgreSQL
 ```sql
 CREATE DATABASE servicio_tecnico_db;
-CREATE USER servicio_user WITH PASSWORD 'password_seguro';
+CREATE USER servicio_user WITH PASSWORD 'tu_password_seguro';
 GRANT ALL PRIVILEGES ON DATABASE servicio_tecnico_db TO servicio_user;
 ```
 
 ### 5. Configurar variables de entorno
-Copiar el archivo de ejemplo y configurar:
 ```bash
 cp env.example .env
 ```
 
 Editar `.env` con tus configuraciones:
 ```env
-DATABASE_URL=postgresql://servicio_user:password_seguro@localhost:5432/servicio_tecnico_db
-SECRET_KEY=tu-clave-secreta-aqui
+DATABASE_URL=postgresql://servicio_user:tu_password@localhost:5432/servicio_tecnico_db
+SECRET_KEY=tu-clave-secreta-muy-segura-aqui
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 ```
@@ -96,7 +93,7 @@ python manage.py createsuperuser
 
 ### 8. Recopilar archivos estáticos
 ```bash
-python manage.py collectstatic
+python manage.py collectstatic --noinput
 ```
 
 ### 9. Ejecutar servidor de desarrollo
@@ -104,167 +101,141 @@ python manage.py collectstatic
 python manage.py runserver
 ```
 
-## Configuración para Producción
+Acceder a: `http://localhost:8000`
 
-### 1. Usar configuración de producción
+##  Despliegue en Producción
+
+### Opción 1: Heroku
+
 ```bash
-export DJANGO_SETTINGS_MODULE=servicio_tecnico.settings_production
-```
+# 1. Instalar Heroku CLI
+# Descargar desde: https://devcenter.heroku.com/articles/heroku-cli
 
-### 2. Configurar variables de entorno de producción
-```env
-DEBUG=False
-SECRET_KEY=clave-secreta-muy-segura
-ALLOWED_HOSTS=tu-dominio.com,www.tu-dominio.com
-DATABASE_URL=postgresql://usuario:password@host:puerto/base_de_datos
-```
-
-### 3. Recopilar archivos estáticos
-```bash
-python manage.py collectstatic --noinput
-```
-
-### 4. Ejecutar con Gunicorn
-```bash
-gunicorn servicio_tecnico.wsgi:application --bind 0.0.0.0:8000
-```
-
-## Despliegue en Heroku
-
-### 1. Instalar Heroku CLI
-Descargar e instalar desde [heroku.com](https://devcenter.heroku.com/articles/heroku-cli)
-
-### 2. Login en Heroku
-```bash
+# 2. Login
 heroku login
-```
 
-### 3. Crear aplicación
-```bash
+# 3. Crear aplicación
 heroku create tu-app-servicio-tecnico
-```
 
-### 4. Configurar variables de entorno
-```bash
+# 4. Configurar variables de entorno
 heroku config:set SECRET_KEY=tu-clave-secreta
 heroku config:set DEBUG=False
 heroku config:set ALLOWED_HOSTS=tu-app-servicio-tecnico.herokuapp.com
-```
 
-### 5. Configurar base de datos
-```bash
+# 5. Configurar base de datos
 heroku addons:create heroku-postgresql:hobby-dev
-```
 
-### 6. Desplegar
-```bash
-git add .
-git commit -m "Deploy to Heroku"
+# 6. Desplegar
 git push heroku main
-```
 
-### 7. Ejecutar migraciones
-```bash
+# 7. Ejecutar migraciones
 heroku run python manage.py migrate
-```
 
-### 8. Crear superusuario
-```bash
+# 8. Crear superusuario
 heroku run python manage.py createsuperuser
 ```
 
-## Estructura del Proyecto
+### Opción 2: Servidor VPS
 
-```
-servicio_tecnico/
-├── core/                    # Aplicación principal
-│   ├── models.py           # Modelos de datos
-│   ├── views.py            # Vistas
-│   ├── forms.py            # Formularios
-│   ├── admin.py            # Administración Django
-│   ├── urls.py             # URLs de la aplicación
-│   └── templates/          # Templates HTML
-├── servicio_tecnico/       # Configuración del proyecto
-│   ├── settings.py         # Configuración desarrollo
-│   ├── settings_production.py  # Configuración producción
-│   ├── urls.py             # URLs principales
-│   └── wsgi.py             # WSGI
-├── static/                 # Archivos estáticos
-│   ├── css/               # Estilos CSS
-│   └── js/                # JavaScript
-├── templates/             # Templates base
-├── media/                 # Archivos subidos por usuarios
-├── requirements.txt       # Dependencias Python
-├── Procfile              # Configuración Heroku
-└── README.md             # Este archivo
+```bash
+# 1. Instalar dependencias del sistema
+sudo apt update
+sudo apt install python3-pip python3-venv postgresql nginx
+
+# 2. Configurar PostgreSQL
+sudo -u postgres createdb servicio_tecnico_db
+sudo -u postgres createuser servicio_user
+
+# 3. Clonar y configurar proyecto
+git clone https://github.com/tu-usuario/servicio-tecnico.git
+cd servicio-tecnico
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# 4. Configurar .env
+nano .env
+# Agregar configuraciones de producción
+
+# 5. Migraciones
+python manage.py migrate
+python manage.py collectstatic --noinput
+
+# 6. Ejecutar con Gunicorn
+gunicorn servicio_tecnico.wsgi:application --bind 0.0.0.0:8000
 ```
 
-## Uso del Sistema
+##  Capturas de Pantalla
+
+- **Dashboard Interactivo**: Panel de control con métricas en tiempo real
+- **Asistente IA**: Chatbot integrado para consultas rápidas
+- **Predicción de Inventario**: Gráficos predictivos con tendencias
+- **Diagnóstico Inteligente**: Análisis automático de problemas técnicos
+
+##  Uso del Sistema
 
 ### Acceso Inicial
 1. Ir a `http://localhost:8000`
 2. Iniciar sesión con el superusuario creado
-3. Configurar la empresa en Configuración
+3. Configurar la empresa en **Configuración**
 
-### Gestión de Clientes
-1. Ir a Clientes > Lista de Clientes
-2. Crear nuevos clientes con información completa
-3. Asociar equipos a cada cliente
+### Asistente IA
+- Hacer preguntas sobre tickets, clientes, equipos o inventario
+- Ejemplos:
+  - "¿Qué ticket está retrasado?"
+  - "Información del ticket TKT-001"
+  - "¿Cuántos clientes hay?"
 
-### Gestión de Equipos
-1. Ir a Equipos > Lista de Equipos
-2. Registrar equipos con número de serie único
-3. Establecer garantías y prioridades
+### Dashboard
+- Ver métricas en tiempo real
+- Revisar tickets recientes
+- Monitorear alertas de inventario
+- Analizar predicciones de stock
 
-### Tickets de Servicio
-1. Ir a Tickets > Lista de Tickets
-2. Crear tickets asociados a equipos
-3. Asignar técnicos y establecer fechas prometidas
-4. Seguir el flujo de estados del ticket
-
-### Inventario
-1. Ir a Inventario > Repuestos
-2. Registrar repuestos con códigos únicos
-3. Establecer stock mínimo para alertas
-4. Actualizar precios regularmente
-
-## Personalización
-
-### Agregar Nuevos Módulos
-1. Crear modelos en `core/models.py`
-2. Agregar formularios en `core/forms.py`
-3. Crear vistas en `core/views.py`
-4. Configurar URLs en `core/urls.py`
-5. Crear templates en `core/templates/`
-
-### Modificar Estilos
-- Editar `static/css/custom.css`
-- Los estilos se basan en Bootstrap 5
-- Usar variables CSS para colores principales
-
-## Soporte
-
-Para soporte técnico o reportar bugs:
-- Crear un issue en el repositorio
-- Contactar al desarrollador
-
-## Licencia
-
-Este proyecto está bajo la Licencia MIT. Ver el archivo LICENSE para más detalles.
-
-## Contribuciones
+##  Contribuir
 
 Las contribuciones son bienvenidas. Por favor:
-1. Fork el proyecto
-2. Crear una rama para tu feature
-3. Commit tus cambios
-4. Push a la rama
-5. Abrir un Pull Request
 
-## Changelog
+1. Fork el proyecto
+2. Crea una rama (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+##  Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+
+##  Autor
+
+**Tu Nombre**
+- GitHub: [@tu-usuario](https://github.com/tu-usuario)
+- Twitter: [@tu-twitter](https://twitter.com/tu-twitter)
+- LinkedIn: [Tu Perfil](https://linkedin.com/in/tu-perfil)
+
+##  Agradecimientos
+
+- Django Community
+- Bootstrap Team
+- Chart.js Contributors
+- Todos los contribuidores de código abierto
+
+##  Soporte
+
+Para soporte técnico o reportar bugs:
+- Crear un [issue](https://github.com/tu-usuario/servicio-tecnico/issues)
+- Email: soporte@tudominio.com
+
+##  Changelog
+
+### v2.0.0 (Actual)
+-  Asistente IA integrado
+-  Predicción de inventario con gráficos
+-  Diagnóstico inteligente
+-  Alertas mejoradas con días de agotamiento
+-  Dashboard rediseñado
 
 ### v1.0.0
 - Versión inicial del sistema
 - Módulos básicos implementados
 - Interfaz responsive
-- Configuración para producción

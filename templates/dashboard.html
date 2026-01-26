@@ -1,95 +1,124 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Dashboard - Sistema de Servicio Técnico{% endblock %}
+{% block title %}Dashboard - Servicio Técnico{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <h1 class="mb-4">
-            <i class="bi bi-speedometer2"></i> Dashboard
-        </h1>
+<div class="container-fluid px-4">
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="card-title mb-0">{{ total_clientes }}</h4>
+                            <p class="card-text mb-0">Clientes</p>
+                        </div>
+                        <i class="bi bi-people fs-1 opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="card-title mb-0">{{ total_equipos }}</h4>
+                            <p class="card-text mb-0">Equipos</p>
+                        </div>
+                        <i class="bi bi-laptop fs-1 opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="card-title mb-0">{{ total_tickets }}</h4>
+                            <p class="card-text mb-0">Total Tickets</p>
+                        </div>
+                        <i class="bi bi-ticket-detailed fs-1 opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="card-title mb-0">{{ tickets_activos }}</h4>
+                            <p class="card-text mb-0">Tickets Activos</p>
+                        </div>
+                        <i class="bi bi-gear fs-1 opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<!-- Estadísticas Generales -->
-<div class="row mb-4">
-    <div class="col-md-3">
-        <div class="card bg-primary text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h4 class="card-title">{{ total_clientes }}</h4>
-                        <p class="card-text">Clientes</p>
+    <!-- Main Content Area -->
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-md-4 mb-4">
+            <!-- Asistente IA -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-robot"></i> Asistente IA</h5>
+                </div>
+                <div class="card-body" style="height: 300px; overflow-y: auto; background-color: #f8f9fa;">
+                    <div id="chat-messages">
+                        <div class="message mb-2">
+                            <div class="question-badge bg-primary text-white p-2 rounded mb-2">
+                                ¿Qué ticket está retrasado?
+                            </div>
+                            <div class="answer-badge bg-light p-2 rounded border">
+                                <span id="ai-initial-response">El ticket TKT-003 está retrasado. ¿Necesitas más información?</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-people fs-1"></i>
+                </div>
+                <div class="card-footer bg-white">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="chat-input" placeholder="Escribe tu pregunta">
+                        <button class="btn btn-primary" id="send-chat" type="button">
+                            <i class="bi bi-send"></i>
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card bg-success text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h4 class="card-title">{{ total_equipos }}</h4>
-                        <p class="card-text">Equipos</p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-laptop fs-1"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card bg-warning text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h4 class="card-title">{{ total_tickets }}</h4>
-                        <p class="card-text">Total Tickets</p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-ticket-detailed fs-1"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card bg-info text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h4 class="card-title">{{ tickets_activos }}</h4>
-                        <p class="card-text">Tickets Activos</p>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="bi bi-gear fs-1"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="row">
-    <!-- Tickets Recientes -->
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-clock-history"></i> Tickets Recientes
-                </h5>
+            <!-- Predicción de Inventario -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-graph-up"></i> Predicción de Inventario</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="inventoryChart" height="200"></canvas>
+                </div>
             </div>
-            <div class="card-body">
-                {% if tickets_recientes %}
+        </div>
+
+        <!-- Middle Column -->
+        <div class="col-md-4 mb-4">
+            <!-- Buscar -->
+            <div class="mb-3">
+                <input type="text" class="form-control" placeholder="Buscar..." id="search-input">
+            </div>
+
+            <!-- Tickets Recientes -->
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> Tickets Recientes</h5>
+                </div>
+                <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light">
                                 <tr>
                                     <th>Número</th>
                                     <th>Cliente</th>
@@ -99,108 +128,105 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for ticket in tickets_recientes %}
+                                {% for ticket in tickets_recientes|slice:":3" %}
                                 <tr>
                                     <td>
                                         <a href="{% url 'ticket_detail' ticket.pk %}" class="text-decoration-none">
                                             {{ ticket.numero }}
                                         </a>
                                     </td>
-                                    <td>{{ ticket.equipo.cliente.nombre }}</td>
-                                    <td>{{ ticket.equipo.marca }} {{ ticket.equipo.modelo }}</td>
+                                    <td>{{ ticket.equipo.cliente.nombre|truncatechars:15 }}</td>
+                                    <td>{{ ticket.equipo.marca }} {{ ticket.equipo.modelo|truncatechars:15 }}</td>
                                     <td>
-                                        <span class="badge bg-{% if ticket.estado == 'completado' %}success{% elif ticket.estado == 'cancelado' %}danger{% else %}warning{% endif %}">
+                                        <span class="badge bg-{% if ticket.estado == 'completado' %}success{% elif ticket.estado == 'reparacion' %}warning{% elif ticket.estado == 'diagnostico' %}info{% else %}secondary{% endif %}">
                                             {{ ticket.get_estado_display }}
                                         </span>
                                     </td>
-                                    <td>{{ ticket.fecha_ingreso|date:"d/m/Y H:i" }}</td>
+                                    <td>{{ ticket.fecha_ingreso|date:"H:i" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-3">No hay tickets recientes</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
-                {% else %}
-                    <p class="text-muted">No hay tickets recientes.</p>
-                {% endif %}
+                </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Alertas y Stock Bajo -->
-    <div class="col-md-4">
-        <!-- Alertas -->
-        <div class="card mb-3">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-exclamation-triangle"></i> Alertas
-                </h5>
-            </div>
-            <div class="card-body">
-                {% if alertas_no_leidas %}
-                    {% for alerta in alertas_no_leidas %}
-                    <div class="alert alert-{% if alerta.prioridad == 'critica' %}danger{% elif alerta.prioridad == 'alta' %}warning{% else %}info{% endif %} alert-sm">
-                        <strong>{{ alerta.titulo }}</strong><br>
-                        <small>{{ alerta.descripcion|truncatechars:50 }}</small>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <p class="text-muted">No hay alertas pendientes.</p>
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Stock Bajo -->
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-box-seam"></i> Stock Bajo
-                </h5>
-            </div>
-            <div class="card-body">
-                {% if stock_bajo %}
-                    {% for repuesto in stock_bajo %}
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <div>
-                            <strong>{{ repuesto.nombre }}</strong><br>
-                            <small class="text-muted">{{ repuesto.codigo }}</small>
+            <!-- Alertas -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Alertas</h5>
+                </div>
+                <div class="card-body">
+                    {% for alerta in alertas_inventario %}
+                    <div class="alert alert-warning d-flex align-items-start mb-2 py-2 px-3">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <div class="small">
+                            {{ alerta.mensaje }}
                         </div>
-                        <span class="badge bg-danger">{{ repuesto.stock_actual }}</span>
                     </div>
+                    {% empty %}
+                    <p class="text-muted small mb-0">No hay alertas pendientes</p>
                     {% endfor %}
-                {% else %}
-                    <p class="text-muted">Todos los repuestos tienen stock suficiente.</p>
-                {% endif %}
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
-<!-- Gráfico de Tickets por Estado -->
-<div class="row mt-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-pie-chart"></i> Tickets por Estado
-                </h5>
-            </div>
-            <div class="card-body">
-                {% if tickets_por_estado %}
-                    <div class="row">
-                        {% for estado in tickets_por_estado %}
-                        <div class="col-md-2 text-center">
-                            <div class="p-3 border rounded">
-                                <h4 class="text-primary">{{ estado.count }}</h4>
-                                <small class="text-muted">{{ estado.estado|title }}</small>
+        <!-- Right Column -->
+        <div class="col-md-4 mb-4">
+            <!-- Diagnóstico Inteligente -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-cpu"></i> Diagnóstico Inteligente</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <p class="small mb-2"><strong>Problema:</strong></p>
+                        <p class="small text-muted mb-0" id="diagnostico-problema">
+                            La laptop se apaga sola y está muy lenta
+                        </p>
+                    </div>
+                    <div id="diagnostico-resultados">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="small">Sobrecalentamiento</span>
+                                <span class="small fw-bold">82%</span>
+                            </div>
+                            <div class="progress" style="height: 10px;">
+                                <div class="progress-bar bg-danger" role="progressbar" style="width: 82%" aria-valuenow="82" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </div>
-                        {% endfor %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="small">Daño en disco duro</span>
+                                <span class="small fw-bold">45%</span>
+                            </div>
+                            <div class="progress" style="height: 10px;">
+                                <div class="progress-bar bg-warning" role="progressbar" style="width: 45%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="small">RAM</span>
+                                <span class="small fw-bold">29%</span>
+                            </div>
+                            <div class="progress" style="height: 10px;">
+                                <div class="progress-bar bg-info" role="progressbar" style="width: 29%" aria-valuenow="29" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
                     </div>
-                {% else %}
-                    <p class="text-muted">No hay datos de tickets disponibles.</p>
-                {% endif %}
+                </div>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}
+

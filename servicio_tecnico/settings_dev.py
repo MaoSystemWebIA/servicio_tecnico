@@ -4,24 +4,26 @@ Configuración de desarrollo para el Sistema de Servicio Técnico
 
 from .settings import *
 
-# Configuración de desarrollo
+# =========================
+# DESARROLLO
+# =========================
 DEBUG = True
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
-# Base de datos SQLite para desarrollo
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# ⚠️ IMPORTANTE:
+# NO redefinimos DATABASES
+# Se usa PostgreSQL desde settings.py
 
-# Configuración de archivos estáticos para desarrollo
+# =========================
+# ARCHIVOS ESTÁTICOS
+# =========================
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-# Configuración de logging para desarrollo
+# =========================
+# LOGGING (DESARROLLO)
+# =========================
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -43,29 +45,35 @@ LOGGING = {
     },
 }
 
-# Configuración de email para desarrollo
+# =========================
+# EMAIL (DESARROLLO)
+# =========================
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Configuración de cache para desarrollo
+# =========================
+# CACHE (DESARROLLO)
+# =========================
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
 
-# Configuración de sesiones para desarrollo
-SESSION_COOKIE_AGE = 86400  # 24 horas
+# =========================
+# SESIONES
+# =========================
+SESSION_COOKIE_AGE = 86400
 SESSION_SAVE_EVERY_REQUEST = True
 
-# Configuración de archivos media para desarrollo
+# =========================
+# MEDIA
+# =========================
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 
-# Configuración de archivos estáticos para desarrollo
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATIC_URL = '/static/'
-
-# Configuración de seguridad relajada para desarrollo
+# =========================
+# SEGURIDAD RELAJADA (DEV)
+# =========================
 SECURE_BROWSER_XSS_FILTER = False
 SECURE_CONTENT_TYPE_NOSNIFF = False
 X_FRAME_OPTIONS = 'SAMEORIGIN'

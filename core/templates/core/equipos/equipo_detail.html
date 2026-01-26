@@ -1,298 +1,53 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ object.marca }} {{ object.modelo }} - Sistema de Servicio Técnico{% endblock %}
+{% block title %}Detalle Equipo - Servicio Técnico{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>
-                <i class="bi bi-laptop"></i> {{ object.marca }} {{ object.modelo }}
-            </h1>
-            <div class="btn-group">
-                <a href="{% url 'equipo_edit' object.pk %}" class="btn btn-warning">
-                    <i class="bi bi-pencil"></i> Editar
-                </a>
-                <a href="{% url 'equipo_delete' object.pk %}" class="btn btn-danger">
-                    <i class="bi bi-trash"></i> Eliminar
-                </a>
-                <a href="{% url 'equipo_list' %}" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Volver
-                </a>
-            </div>
-        </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-laptop"></i> Equipo: {{ object.marca }} {{ object.modelo }}</h2>
+    <div>
+        <a href="{% url 'equipo_edit' object.pk %}" class="btn btn-warning">
+            <i class="bi bi-pencil"></i> Editar
+        </a>
+        <a href="{% url 'equipo_list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
     </div>
 </div>
 
 <div class="row">
-    <!-- Información del Equipo -->
     <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-info-circle"></i> Información General
-                </h5>
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Información General</h5>
             </div>
             <div class="card-body">
-                <table class="table table-borderless">
-                    <tr>
-                        <td><strong>Cliente:</strong></td>
-                        <td>
-                            <a href="{% url 'cliente_detail' object.cliente.pk %}" class="text-decoration-none">
-                                {{ object.cliente.nombre }}
-                            </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>Tipo de Equipo:</strong></td>
-                        <td>{{ object.tipo_equipo }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Marca:</strong></td>
-                        <td>{{ object.marca }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Modelo:</strong></td>
-                        <td>{{ object.modelo }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Número de Serie:</strong></td>
-                        <td><strong>{{ object.numero_serie }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Estado:</strong></td>
-                        <td>
-                            <span class="badge bg-{% if object.estado == 'operativo' %}success{% elif object.estado == 'reparacion' %}warning{% else %}danger{% endif %}">
-                                {{ object.get_estado_display }}
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>Prioridad:</strong></td>
-                        <td>
-                            <span class="badge bg-{% if object.prioridad == 'alta' %}danger{% elif object.prioridad == 'media' %}warning{% else %}success{% endif %}">
-                                {{ object.get_prioridad_display }}
-                            </span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>Ubicación:</strong></td>
-                        <td>{{ object.ubicacion|default:"-" }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Fecha de Compra:</strong></td>
-                        <td>{{ object.fecha_compra|date:"d/m/Y"|default:"-" }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Garantía Fabricante:</strong></td>
-                        <td>
-                            {% if object.garantia_fabricante %}
-                                {{ object.garantia_fabricante|date:"d/m/Y" }}
-                                {% if object.garantia_fabricante < today %}
-                                    <span class="badge bg-danger ms-2">Vencida</span>
-                                {% else %}
-                                    <span class="badge bg-success ms-2">Vigente</span>
-                                {% endif %}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>Garantía Taller:</strong></td>
-                        <td>
-                            {% if object.garantia_taller %}
-                                {{ object.garantia_taller|date:"d/m/Y" }}
-                                {% if object.garantia_taller < today %}
-                                    <span class="badge bg-danger ms-2">Vencida</span>
-                                {% else %}
-                                    <span class="badge bg-success ms-2">Vigente</span>
-                                {% endif %}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
-                    </tr>
-                </table>
-                
-                {% if object.caracteristicas %}
-                <div class="mt-3">
-                    <h6>Características:</h6>
-                    <p class="text-muted">{{ object.caracteristicas }}</p>
-                </div>
-                {% endif %}
+                <p><strong>Cliente:</strong> {{ object.cliente.nombre }}</p>
+                <p><strong>Número Serie:</strong> {{ object.numero_serie }}</p>
+                <p><strong>Marca:</strong> {{ object.marca }}</p>
+                <p><strong>Modelo:</strong> {{ object.modelo }}</p>
+                <p><strong>Estado:</strong> <span class="badge bg-{% if object.estado == 'operativo' %}success{% elif object.estado == 'reparacion' %}warning{% else %}secondary{% endif %}">{{ object.get_estado_display }}</span></p>
             </div>
         </div>
     </div>
-    
-    <!-- Estadísticas -->
     <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-graph-up"></i> Estadísticas
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row text-center">
-                    <div class="col-6">
-                        <div class="p-3 border rounded">
-                            <h4 class="text-warning">{{ tickets.count }}</h4>
-                            <small class="text-muted">Tickets</small>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="p-3 border rounded">
-                            <h4 class="text-info">{{ mantenimientos.count }}</h4>
-                            <small class="text-muted">Mantenimientos</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Tickets del Equipo -->
-<div class="row mt-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-ticket-detailed"></i> Tickets ({{ tickets.count }})
-                </h5>
-                <a href="{% url 'ticket_create' %}?equipo={{ object.pk }}" class="btn btn-sm btn-primary">
-                    <i class="bi bi-plus-circle"></i> Nuevo Ticket
-                </a>
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Tickets ({{ tickets.count }})</h5>
             </div>
             <div class="card-body">
                 {% if tickets %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Número</th>
-                                    <th>Estado</th>
-                                    <th>Prioridad</th>
-                                    <th>Fecha Ingreso</th>
-                                    <th>Técnico</th>
-                                    <th>Costo Estimado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for ticket in tickets %}
-                                <tr>
-                                    <td>
-                                        <a href="{% url 'ticket_detail' ticket.pk %}" class="text-decoration-none">
-                                            {{ ticket.numero }}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-{% if ticket.estado == 'completado' %}success{% elif ticket.estado == 'cancelado' %}danger{% else %}warning{% endif %}">
-                                            {{ ticket.get_estado_display }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-{% if ticket.prioridad == 'alta' %}danger{% elif ticket.prioridad == 'media' %}warning{% else %}success{% endif %}">
-                                            {{ ticket.get_prioridad_display }}
-                                        </span>
-                                    </td>
-                                    <td>{{ ticket.fecha_ingreso|date:"d/m/Y" }}</td>
-                                    <td>{{ ticket.tecnico_asignado|default:"-" }}</td>
-                                    <td>${{ ticket.costo_estimado|floatformat:2 }}</td>
-                                    <td>
-                                        <a href="{% url 'ticket_detail' ticket.pk %}" class="btn btn-sm btn-outline-info">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                <ul class="list-group">
+                    {% for ticket in tickets %}
+                    <li class="list-group-item">
+                        <a href="{% url 'ticket_detail' ticket.pk %}">{{ ticket.numero }}</a>
+                        <span class="badge bg-warning">{{ ticket.get_estado_display }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
                 {% else %}
-                    <div class="text-center py-4">
-                        <i class="bi bi-ticket-detailed fs-1 text-muted"></i>
-                        <p class="text-muted mt-2">Este equipo no tiene tickets registrados.</p>
-                        <a href="{% url 'ticket_create' %}?equipo={{ object.pk }}" class="btn btn-primary">
-                            <i class="bi bi-plus-circle"></i> Crear Ticket
-                        </a>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Mantenimientos Preventivos -->
-<div class="row mt-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-gear"></i> Mantenimientos Preventivos ({{ mantenimientos.count }})
-                </h5>
-                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#mantenimientoModal">
-                    <i class="bi bi-plus-circle"></i> Nuevo Mantenimiento
-                </button>
-            </div>
-            <div class="card-body">
-                {% if mantenimientos %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Descripción</th>
-                                    <th>Frecuencia</th>
-                                    <th>Último Mantenimiento</th>
-                                    <th>Próximo Mantenimiento</th>
-                                    <th>Técnico</th>
-                                    <th>Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for mantenimiento in mantenimientos %}
-                                <tr>
-                                    <td>{{ mantenimiento.descripcion|truncatechars:50 }}</td>
-                                    <td>
-                                        <span class="badge bg-info">{{ mantenimiento.get_frecuencia_display }}</span>
-                                    </td>
-                                    <td>{{ mantenimiento.ultimo_mantenimiento|date:"d/m/Y"|default:"-" }}</td>
-                                    <td>
-                                        {% if mantenimiento.proximo_mantenimiento %}
-                                            {{ mantenimiento.proximo_mantenimiento|date:"d/m/Y" }}
-                                            {% if mantenimiento.proximo_mantenimiento < today %}
-                                                <span class="badge bg-danger ms-2">Vencido</span>
-                                            {% elif mantenimiento.proximo_mantenimiento < today|add_days:7 %}
-                                                <span class="badge bg-warning ms-2">Próximo</span>
-                                            {% endif %}
-                                        {% else %}
-                                            -
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ mantenimiento.tecnico_asignado|default:"-" }}</td>
-                                    <td>
-                                        {% if mantenimiento.activo %}
-                                            <span class="badge bg-success">Activo</span>
-                                        {% else %}
-                                            <span class="badge bg-secondary">Inactivo</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <div class="text-center py-4">
-                        <i class="bi bi-gear fs-1 text-muted"></i>
-                        <p class="text-muted mt-2">Este equipo no tiene mantenimientos preventivos programados.</p>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mantenimientoModal">
-                            <i class="bi bi-plus-circle"></i> Programar Mantenimiento
-                        </button>
-                    </div>
+                <p class="text-muted">No hay tickets registrados</p>
                 {% endif %}
             </div>
         </div>

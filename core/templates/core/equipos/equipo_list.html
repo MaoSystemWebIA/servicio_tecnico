@@ -1,169 +1,69 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Equipos - Sistema de Servicio Técnico{% endblock %}
+{% block title %}Equipos - Servicio Técnico{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>
-                <i class="bi bi-laptop"></i> Equipos
-            </h1>
-            <a href="{% url 'equipo_create' %}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Nuevo Equipo
-            </a>
-        </div>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-laptop"></i> Equipos</h2>
+    <a href="{% url 'equipo_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Nuevo Equipo
+    </a>
 </div>
 
-<!-- Filtros -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <form method="get" class="row g-3">
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="search" 
-                               placeholder="Buscar por marca, modelo, serie o cliente..." 
-                               value="{{ request.GET.search }}">
-                    </div>
-                    <div class="col-md-3">
-                        <select class="form-select" name="estado">
-                            <option value="">Todos los estados</option>
-                            <option value="operativo" {% if request.GET.estado == 'operativo' %}selected{% endif %}>Operativo</option>
-                            <option value="reparacion" {% if request.GET.estado == 'reparacion' %}selected{% endif %}>En Reparación</option>
-                            <option value="baja" {% if request.GET.estado == 'baja' %}selected{% endif %}>De Baja</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-outline-primary">
-                            <i class="bi bi-search"></i> Buscar
-                        </button>
-                        <a href="{% url 'equipo_list' %}" class="btn btn-outline-secondary">
-                            <i class="bi bi-x-circle"></i> Limpiar
-                        </a>
-                    </div>
-                </form>
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="get" class="mb-3">
+            <div class="input-group">
+                <input type="text" class="form-control" name="search" placeholder="Buscar..." value="{{ request.GET.search }}">
+                <button class="btn btn-outline-primary" type="submit">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
             </div>
+        </form>
+
+        {% if object_list %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Número Serie</th>
+                        <th>Cliente</th>
+                        <th>Marca</th>
+                        <th>Modelo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for equipo in object_list %}
+                    <tr>
+                        <td>{{ equipo.numero_serie }}</td>
+                        <td>{{ equipo.cliente.nombre }}</td>
+                        <td>{{ equipo.marca }}</td>
+                        <td>{{ equipo.modelo }}</td>
+                        <td><span class="badge bg-{% if equipo.estado == 'operativo' %}success{% elif equipo.estado == 'reparacion' %}warning{% else %}secondary{% endif %}">{{ equipo.get_estado_display }}</span></td>
+                        <td>
+                            <a href="{% url 'equipo_detail' equipo.pk %}" class="btn btn-sm btn-info">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="{% url 'equipo_edit' equipo.pk %}" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'equipo_delete' equipo.pk %}" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-    </div>
-</div>
-
-<!-- Lista de Equipos -->
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                {% if object_list %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Cliente</th>
-                                    <th>Marca</th>
-                                    <th>Modelo</th>
-                                    <th>Número de Serie</th>
-                                    <th>Estado</th>
-                                    <th>Prioridad</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for equipo in object_list %}
-                                <tr>
-                                    <td>
-                                        <a href="{% url 'cliente_detail' equipo.cliente.pk %}" class="text-decoration-none">
-                                            {{ equipo.cliente.nombre }}
-                                        </a>
-                                    </td>
-                                    <td>{{ equipo.marca }}</td>
-                                    <td>{{ equipo.modelo }}</td>
-                                    <td>
-                                        <strong>{{ equipo.numero_serie }}</strong>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-{% if equipo.estado == 'operativo' %}success{% elif equipo.estado == 'reparacion' %}warning{% else %}danger{% endif %}">
-                                            {{ equipo.get_estado_display }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-{% if equipo.prioridad == 'alta' %}danger{% elif equipo.prioridad == 'media' %}warning{% else %}success{% endif %}">
-                                            {{ equipo.get_prioridad_display }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <a href="{% url 'equipo_detail' equipo.pk %}" 
-                                               class="btn btn-sm btn-outline-info" title="Ver detalles">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            <a href="{% url 'equipo_edit' equipo.pk %}" 
-                                               class="btn btn-sm btn-outline-warning" title="Editar">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            <a href="{% url 'equipo_delete' equipo.pk %}" 
-                                               class="btn btn-sm btn-outline-danger" title="Eliminar">
-                                                <i class="bi bi-trash"></i>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Paginación -->
-                    {% if is_paginated %}
-                        <nav aria-label="Paginación de equipos">
-                            <ul class="pagination justify-content-center">
-                                {% if page_obj.has_previous %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}">
-                                            Primera
-                                        </a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}">
-                                            Anterior
-                                        </a>
-                                    </li>
-                                {% endif %}
-
-                                <li class="page-item active">
-                                    <span class="page-link">
-                                        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
-                                    </span>
-                                </li>
-
-                                {% if page_obj.has_next %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}">
-                                            Siguiente
-                                        </a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.estado %}&estado={{ request.GET.estado }}{% endif %}">
-                                            Última
-                                        </a>
-                                    </li>
-                                {% endif %}
-                            </ul>
-                        </nav>
-                    {% endif %}
-                {% else %}
-                    <div class="text-center py-5">
-                        <i class="bi bi-laptop fs-1 text-muted"></i>
-                        <h4 class="text-muted mt-3">No hay equipos registrados</h4>
-                        <p class="text-muted">Comienza agregando tu primer equipo.</p>
-                        <a href="{% url 'equipo_create' %}" class="btn btn-primary">
-                            <i class="bi bi-plus-circle"></i> Agregar Equipo
-                        </a>
-                    </div>
-                {% endif %}
-            </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No hay equipos registrados.
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

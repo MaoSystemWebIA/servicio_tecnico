@@ -1,271 +1,56 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ object.nombre }} - Sistema de Servicio Técnico{% endblock %}
+{% block title %}Detalle Cliente - Servicio Técnico{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>
-                <i class="bi bi-person"></i> {{ object.nombre }}
-            </h1>
-            <div class="btn-group">
-                <a href="{% url 'cliente_edit' object.pk %}" class="btn btn-warning">
-                    <i class="bi bi-pencil"></i> Editar
-                </a>
-                <a href="{% url 'cliente_delete' object.pk %}" class="btn btn-danger">
-                    <i class="bi bi-trash"></i> Eliminar
-                </a>
-                <a href="{% url 'cliente_list' %}" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Volver
-                </a>
-            </div>
-        </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-people"></i> Cliente: {{ object.nombre }}</h2>
+    <div>
+        <a href="{% url 'cliente_edit' object.pk %}" class="btn btn-warning">
+            <i class="bi bi-pencil"></i> Editar
+        </a>
+        <a href="{% url 'cliente_list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
     </div>
 </div>
 
 <div class="row">
-    <!-- Información del Cliente -->
     <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-info-circle"></i> Información General
-                </h5>
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Información General</h5>
             </div>
             <div class="card-body">
-                <table class="table table-borderless">
-                    <tr>
-                        <td><strong>Código:</strong></td>
-                        <td>{{ object.codigo }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Tipo:</strong></td>
-                        <td>
-                            <span class="badge bg-info">{{ object.get_tipo_display }}</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>Contacto:</strong></td>
-                        <td>{{ object.contacto|default:"-" }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Teléfono:</strong></td>
-                        <td>{{ object.telefono|default:"-" }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Email:</strong></td>
-                        <td>{{ object.email|default:"-" }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>RUC/CI:</strong></td>
-                        <td>{{ object.ruc_ci|default:"-" }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Dirección:</strong></td>
-                        <td>{{ object.direccion|default:"-" }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Crédito:</strong></td>
-                        <td>
-                            {% if object.credito %}
-                                <span class="badge bg-success">Sí</span>
-                            {% else %}
-                                <span class="badge bg-secondary">No</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% if object.credito %}
-                    <tr>
-                        <td><strong>Límite de Crédito:</strong></td>
-                        <td>${{ object.limite_credito|floatformat:2 }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Saldo Actual:</strong></td>
-                        <td>
-                            <span class="{% if object.saldo_actual > 0 %}text-danger{% else %}text-success{% endif %}">
-                                ${{ object.saldo_actual|floatformat:2 }}
-                            </span>
-                        </td>
-                    </tr>
-                    {% endif %}
-                    <tr>
-                        <td><strong>Fecha de Registro:</strong></td>
-                        <td>{{ object.fecha_registro|date:"d/m/Y H:i" }}</td>
-                    </tr>
-                </table>
-                
-                {% if object.notas %}
-                <div class="mt-3">
-                    <h6>Notas:</h6>
-                    <p class="text-muted">{{ object.notas }}</p>
-                </div>
-                {% endif %}
+                <p><strong>Código:</strong> {{ object.codigo }}</p>
+                <p><strong>Nombre:</strong> {{ object.nombre }}</p>
+                <p><strong>Tipo:</strong> {{ object.get_tipo_display }}</p>
+                <p><strong>RUC/CI:</strong> {{ object.ruc_ci|default:"-" }}</p>
+                <p><strong>Contacto:</strong> {{ object.contacto|default:"-" }}</p>
+                <p><strong>Teléfono:</strong> {{ object.telefono|default:"-" }}</p>
+                <p><strong>Email:</strong> {{ object.email|default:"-" }}</p>
+                <p><strong>Dirección:</strong> {{ object.direccion|default:"-" }}</p>
             </div>
         </div>
     </div>
-    
-    <!-- Estadísticas -->
     <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-graph-up"></i> Estadísticas
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row text-center">
-                    <div class="col-6">
-                        <div class="p-3 border rounded">
-                            <h4 class="text-primary">{{ equipos.count }}</h4>
-                            <small class="text-muted">Equipos</small>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="p-3 border rounded">
-                            <h4 class="text-warning">{{ tickets.count }}</h4>
-                            <small class="text-muted">Tickets</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Equipos del Cliente -->
-<div class="row mt-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-laptop"></i> Equipos ({{ equipos.count }})
-                </h5>
-                <a href="{% url 'equipo_create' %}?cliente={{ object.pk }}" class="btn btn-sm btn-primary">
-                    <i class="bi bi-plus-circle"></i> Nuevo Equipo
-                </a>
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Equipos ({{ equipos.count }})</h5>
             </div>
             <div class="card-body">
                 {% if equipos %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Marca</th>
-                                    <th>Modelo</th>
-                                    <th>Número de Serie</th>
-                                    <th>Estado</th>
-                                    <th>Prioridad</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for equipo in equipos %}
-                                <tr>
-                                    <td>{{ equipo.marca }}</td>
-                                    <td>{{ equipo.modelo }}</td>
-                                    <td>{{ equipo.numero_serie }}</td>
-                                    <td>
-                                        <span class="badge bg-{% if equipo.estado == 'operativo' %}success{% elif equipo.estado == 'reparacion' %}warning{% else %}danger{% endif %}">
-                                            {{ equipo.get_estado_display }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-{% if equipo.prioridad == 'alta' %}danger{% elif equipo.prioridad == 'media' %}warning{% else %}success{% endif %}">
-                                            {{ equipo.get_prioridad_display }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <a href="{% url 'equipo_detail' equipo.pk %}" class="btn btn-sm btn-outline-info">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                <ul class="list-group">
+                    {% for equipo in equipos %}
+                    <li class="list-group-item">
+                        <a href="{% url 'equipo_detail' equipo.pk %}">{{ equipo.marca }} {{ equipo.modelo }}</a>
+                        <span class="badge bg-{{ equipo.estado|yesno:'success,warning,secondary' }}">{{ equipo.get_estado_display }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
                 {% else %}
-                    <div class="text-center py-4">
-                        <i class="bi bi-laptop fs-1 text-muted"></i>
-                        <p class="text-muted mt-2">Este cliente no tiene equipos registrados.</p>
-                        <a href="{% url 'equipo_create' %}?cliente={{ object.pk }}" class="btn btn-primary">
-                            <i class="bi bi-plus-circle"></i> Agregar Equipo
-                        </a>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Tickets del Cliente -->
-<div class="row mt-4">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">
-                    <i class="bi bi-ticket-detailed"></i> Tickets ({{ tickets.count }})
-                </h5>
-                <a href="{% url 'ticket_create' %}" class="btn btn-sm btn-primary">
-                    <i class="bi bi-plus-circle"></i> Nuevo Ticket
-                </a>
-            </div>
-            <div class="card-body">
-                {% if tickets %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Número</th>
-                                    <th>Equipo</th>
-                                    <th>Estado</th>
-                                    <th>Prioridad</th>
-                                    <th>Fecha Ingreso</th>
-                                    <th>Costo Estimado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for ticket in tickets %}
-                                <tr>
-                                    <td>
-                                        <a href="{% url 'ticket_detail' ticket.pk %}" class="text-decoration-none">
-                                            {{ ticket.numero }}
-                                        </a>
-                                    </td>
-                                    <td>{{ ticket.equipo.marca }} {{ ticket.equipo.modelo }}</td>
-                                    <td>
-                                        <span class="badge bg-{% if ticket.estado == 'completado' %}success{% elif ticket.estado == 'cancelado' %}danger{% else %}warning{% endif %}">
-                                            {{ ticket.get_estado_display }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-{% if ticket.prioridad == 'alta' %}danger{% elif ticket.prioridad == 'media' %}warning{% else %}success{% endif %}">
-                                            {{ ticket.get_prioridad_display }}
-                                        </span>
-                                    </td>
-                                    <td>{{ ticket.fecha_ingreso|date:"d/m/Y" }}</td>
-                                    <td>${{ ticket.costo_estimado|floatformat:2 }}</td>
-                                    <td>
-                                        <a href="{% url 'ticket_detail' ticket.pk %}" class="btn btn-sm btn-outline-info">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <div class="text-center py-4">
-                        <i class="bi bi-ticket-detailed fs-1 text-muted"></i>
-                        <p class="text-muted mt-2">Este cliente no tiene tickets registrados.</p>
-                        <a href="{% url 'ticket_create' %}" class="btn btn-primary">
-                            <i class="bi bi-plus-circle"></i> Crear Ticket
-                        </a>
-                    </div>
+                <p class="text-muted">No hay equipos registrados</p>
                 {% endif %}
             </div>
         </div>
