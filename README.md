@@ -8,7 +8,14 @@ Puedes ver una demostración completa de todas las funcionalidades del sistema e
 
 📹 **[Ver Demo Completo](docs/demo/demo-video.mp4)**
 
-El video muestra todas las características principales del sistema, incluyendo el panel de control, gestión de tickets, inventario inteligente, chatbot con IA y más.
+El video muestra el **frontend real** de la aplicación con todas las características principales del sistema, incluyendo:
+- Panel de control (Dashboard) con métricas en tiempo real
+- Gestión de clientes y equipos
+- Sistema de tickets de servicio
+- Control de inventario inteligente
+- Gestión de proveedores
+- Facturación electrónica
+- Chatbot con IA integrado
 
 ---
 
