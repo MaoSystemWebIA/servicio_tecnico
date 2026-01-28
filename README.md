@@ -2,6 +2,16 @@ Sistema de Gestión para Talleres de Servicio Técnico
 
 Sistema completo de gestión para talleres de servicio técnico con funcionalidades avanzadas, desarrollado con Django 5.2.
 
+## 🎥 Demo en Video
+
+Puedes ver una demostración completa de todas las funcionalidades del sistema en el siguiente video:
+
+📹 **[Ver Demo Completo](docs/demo/demo-video.mp4)**
+
+El video muestra todas las características principales del sistema, incluyendo el panel de control, gestión de tickets, inventario inteligente, chatbot con IA y más.
+
+---
+
 Características Principales
 
 Funcionalidades Avanzadas:
